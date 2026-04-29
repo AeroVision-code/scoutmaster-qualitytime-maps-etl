@@ -1,0 +1,58 @@
+version: 0.2
+
+env:
+  variables:
+    REPOSITORY_URI: 974966102283.dkr.ecr.eu-central-1.amazonaws.com/layers/elevation_maps
+    LOCAL_IMAGE_NAME: elevation-mapping
+    AWS_DEFAULT_REGION: eu-central-1
+
+phases:
+  pre_build:
+    commands:
+      - echo Logging in to Amazon ECR...
+      - ACCOUNT_ID=$(echo $REPOSITORY_URI | cut -d'/' -f1)
+      - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $ACCOUNT_ID
+      - TIMESTAMP=$(date +%Y%m%d%H%M%S)
+      - VERSION_TAG=$TIMESTAMP
+      - VERSIONED_IMAGE="$REPOSITORY_URI:$VERSION_TAG"
+
+  build:
+    commands:
+      - echo Building Docker image...
+      - docker build -t "$LOCAL_IMAGE_NAME:$VERSION_TAG" .
+
+  post_build:
+    commands:
+      - echo Tagging image for ECR...
+      - docker tag "$LOCAL_IMAGE_NAME:$VERSION_TAG" "$VERSIONED_IMAGE"
+
+      - echo Pushing image to ECR...
+      - docker push "$VERSIONED_IMAGE"
+
+      - echo Fetching task definition...
+      - aws ecs describe-task-definition --task-definition ElevationMapping --region eu-central-1 --output json > task-def.json
+
+      - echo Updating image in task definition...
+      - >
+        jq --arg IMAGE "$VERSIONED_IMAGE" '
+        .taskDefinition
+        | .containerDefinitions[0].image = $IMAGE
+        | del(
+            .taskDefinitionArn,
+            .revision,
+            .status,
+            .requiresAttributes,
+            .compatibilities,
+            .registeredAt,
+            .registeredBy
+          )
+        ' task-def.json > new-task-def.json
+
+      - aws ecs register-task-definition --cli-input-json file://new-task-def.json --region eu-central-1
+
+      - echo Creating imagedefinitions.json...
+      - printf '[{"name":"elevation-mapping","imageUri":"%s"}]' "$VERSIONED_IMAGE" > imagedefinitions.json
+
+artifacts:
+  files:
+    - imagedefinitions.json
