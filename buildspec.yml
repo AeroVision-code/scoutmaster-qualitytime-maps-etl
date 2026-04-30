@@ -30,7 +30,7 @@ phases:
       - docker push "$VERSIONED_IMAGE"
 
       - echo Fetching task definition...
-      - aws ecs describe-task-definition --task-definition QualityTime --region eu-central-1 --output json > task-def.json
+      - aws ecs describe-task-definition --task-definition qualitytime-task-definition --region eu-central-1 --output json > task-def.json
 
       - echo Updating image in task definition...
       - >
