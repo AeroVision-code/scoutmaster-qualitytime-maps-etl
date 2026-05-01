@@ -18,14 +18,12 @@ import requests
 load_dotenv()
 
 try:
-    project_root = Path(__file__).resolve().parent.parent.parent
+    project_root = Path(__file__).resolve().parent
 except NameError:
-    # running in Jupyter
-    project_root = Path().resolve().parent.parent
+    project_root = Path().resolve()
 
 libs_path = project_root / "libs" / "scoutmaster_api"
 sys.path.insert(0, str(libs_path))
-print("libs_path:", libs_path)
 
 from scoutmaster.api import ScoutMasterAPI
 
