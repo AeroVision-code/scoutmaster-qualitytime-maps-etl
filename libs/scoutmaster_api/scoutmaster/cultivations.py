@@ -3,7 +3,7 @@ import pandas as pd
 
 class Cultivations:
     def cultivations(self, project_id):
-        endpoint = f"projects/{project_id}/cultivations"
+        endpoint = f"projects/{project_id}/calendars"
         params = {}
         if self.output_format in ["geojson", "gdf"]:
             params["output"] = "geojson"
@@ -13,7 +13,7 @@ class Cultivations:
         return self._format_output(data)
     
     def cultivations_by_field(self, field_id):
-        endpoint = f"fields/{field_id}/calendar"
+        endpoint = f"fields/{field_id}/calendars"
         params = {}
         if self.output_format in ["geojson", "gdf"]:
             params["output"] = "geojson"

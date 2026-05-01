@@ -18,12 +18,12 @@ RUN apt-get update && apt-get install -y \
 # COPY input/ input/
 COPY main.py . 
 COPY scripts/ ./scripts/
-COPY libs/ ./libs/
+# COPY libs/ ./libs/
 
 # Install dependencies directly (no virtualenv needed)
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
-# RUN pip install --no-cache-dir --force-reinstall git+https://github.com/AeroVision-code/ScoutMasterAPI-builder.git@main
+RUN pip install --no-cache-dir --force-reinstall git+https://github.com/AeroVision-code/ScoutMasterAPI-builder.git@main
 
 # Run cron in the foreground
 CMD ["python", "main.py"]
