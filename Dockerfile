@@ -1,5 +1,5 @@
 # Use the pre-built Python GDAL image
-FROM public.ecr.aws/docker/library/python:3.10-slim
+FROM public.ecr.aws/docker/library/python:3.11-slim
 
 # Set the working directory
 WORKDIR /app
