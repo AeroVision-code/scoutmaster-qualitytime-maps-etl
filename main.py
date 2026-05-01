@@ -17,15 +17,7 @@ import requests
 # ============================================================
 load_dotenv()
 
-try:
-    project_root = Path(__file__).resolve().parent
-except NameError:
-    project_root = Path().resolve()
-
-libs_path = project_root / "libs" / "scoutmaster_api"
-sys.path.insert(0, str(libs_path))
-
-from scoutmaster.api import ScoutMasterAPI
+from libs.scoutmaster_api.scoutmaster.api import ScoutMasterAPI
 
 client_id = os.getenv("SM_CLIENT_ID")
 client_secret = os.getenv("SM_CLIENT_SECRET")
