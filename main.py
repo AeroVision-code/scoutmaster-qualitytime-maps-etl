@@ -17,7 +17,6 @@ import requests
 # ============================================================
 load_dotenv()
 
-
 try:
     project_root = Path(__file__).resolve().parent.parent.parent
 except NameError:
