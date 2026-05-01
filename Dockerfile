@@ -16,7 +16,7 @@ RUN apt-get update && apt-get install -y \
 
 # # Copy project files
 # COPY input/ input/
-# COPY main.py . 
+COPY main.py . 
 COPY scripts/ ./scripts/
 
 # Install dependencies directly (no virtualenv needed)
